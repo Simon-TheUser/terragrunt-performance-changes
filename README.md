@@ -1,18 +1,25 @@
-# Demonstration of performance changes in dependency fetching with Terragrunt 0.50.15
+# Terragrunt 0.50.15 became much slower with multiple dependencies
 
-I use Terragrunt to spin up developper environments and heavely use the `dependencies` block.  After upgrading Terragrunt to v0.50.15, I noticed that my `run-all` commands became very slow when generating the depencendiy groups.
-
+I use Terragrunt to spin up complete environments for quick testing and I  use the `dependencies` block a lot.  After upgrading Terragrunt to v0.50.15, I noticed that my `run-all` commands became very slow.
 
 I've built a mock setup that ressembles my IaC development environment to more or less replicate the problem I saw.
+
+## Note
+
+1. The issue seems to be around building the dependencies, not reading the terraform outputs.
+ 
 
 ## Reproducing the issue
 
 To reproduce the issue, simply run `terragrunt graph-dependencies` in the `iac` folder of this repo and look at the time it takes for terragrunt to return.
 
-I put together three scripts that allows you to compare different versions of Terraform (it takes ~10 minutes to run):
+
+## Scripts to test Terragrunt speed
+
+I put together three scripts that allows you to compare different the performance of different versions of Terragrunt. I used containers to keep things simple. Simply run the three scripts in the following order:
 
 ### 01-build_containers.sh
-This script will build multiple container images, one for each version of Terragrunt specified in the versions.sh file.
+This script will build one container for each version of Terragrunt specified in the versions.sh file.
 
 ### 02-run_tests.sh
 This script executes the same command against each version of terragrunt and records the time it takes to execute.
@@ -20,7 +27,10 @@ This script executes the same command against each version of terragrunt and rec
 ### 03-print-results.sh
 This script simply prints the time it took for each container to execute.
 
-## My results
+### 04-delete_containers.sh
+Cleans up and delete all the containers step 01 created.
+
+## Example of my results
 Here are the results of my performance tests against different versions of terragrunt on this git repository. Notice how version 0.50.15 became much slower to execute `graph-dependencies``:
 
 ```
@@ -29,42 +39,6 @@ Command exited with non-zero status 1
 real    0m 2.61s
 user    0m 3.24s
 sys     0m 0.47s
-
-Testing with Terragrunt version 0.45.18
-Command exited with non-zero status 1
-real    0m 2.40s
-user    0m 2.86s
-sys     0m 0.48s
-
-Testing with Terragrunt version 0.46.3
-Command exited with non-zero status 1
-real    0m 2.15s
-user    0m 2.60s
-sys     0m 0.39s
-
-Testing with Terragrunt version 0.48.7
-Command exited with non-zero status 1
-real    0m 2.13s
-user    0m 2.58s
-sys     0m 0.32s
-
-Testing with Terragrunt version 0.49.1
-Command exited with non-zero status 1
-real    0m 1.91s
-user    0m 2.43s
-sys     0m 0.21s
-
-Testing with Terragrunt version 0.50.0
-Command exited with non-zero status 1
-real    0m 2.22s
-user    0m 2.62s
-sys     0m 0.40s
-
-Testing with Terragrunt version 0.50.5
-Command exited with non-zero status 1
-real    0m 2.11s
-user    0m 2.57s
-sys     0m 0.32s
 
 Testing with Terragrunt version 0.50.10
 Command exited with non-zero status 1
