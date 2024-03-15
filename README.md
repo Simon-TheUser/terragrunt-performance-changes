@@ -1,3 +1,10 @@
+# ISSUE RESOLVED!
+
+Terragrunt 0.55.16 fixed the performance issue and runs as fast as 0.50.14!
+
+Github Project archived.
+
+
 # Terragrunt 0.50.15 became much slower with multiple dependencies
 
 I use Terragrunt to spin up complete environments for quick testing and I  use the `dependencies` block a lot.  After upgrading Terragrunt to v0.50.15, I noticed that my `run-all` commands became very slow.
