@@ -10,7 +10,7 @@ TG_CMD="terragrunt graph-dependencies"
 #TG_CMD=terragrunt run-all apply
 
 # Run TG_CMD against each version of Terragrunt
-for TG_VER in "${TG_VERS[@]}"; do
+for TG_VER in "${TG_VERS_TO_TEST[@]}"; do
     echo Testing with Terragrunt version ${TG_VER} | tee time.tg${TG_VER}.txt
-    $c run --rm -v "$(pwd)/iac:/iac" -v "$(pwd):/project" tg:${TG_VER} /usr/bin/time -ao /project/time.tg${TG_VER}.txt ${TG_CMD}
+    $c run --rm -v "$(pwd)/iac:/iac" -v "$(pwd):/project" tg:${TG_VER} /usr/bin/time -ao /project/time.tg${TG_VER}.txt ${TG_CMD} 2>&1 | tee out.${TG_VER}.txt
 done

@@ -1,2 +1,4 @@
 .terragrunt-cache
 time.*.txt
+out.*.txt
+terragrunt.v*

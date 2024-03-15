@@ -18,16 +18,19 @@ To reproduce the issue, simply run `terragrunt graph-dependencies` in the `iac` 
 
 I put together three scripts that allows you to compare different the performance of different versions of Terragrunt. I used containers to keep things simple. Simply run the three scripts in the following order:
 
-### 01-build_containers.sh
-This script will build one container for each version of Terragrunt specified in the versions.sh file.
+### 01-download_terragrunt_binaries.sh
+Download different version of official Terragrunt binaries for testing.
 
-### 02-run_tests.sh
+### 02-build_containers.sh
+This script will build one container for each version of Terragrunt.
+
+### 03-run_tests.sh
 This script executes the same command against each version of terragrunt and records the time it takes to execute.
 
-### 03-print-results.sh
+### 04-print-results.sh
 This script simply prints the time it took for each container to execute.
 
-### 04-delete_containers.sh
+### 05-delete_containers.sh
 Cleans up and delete all the containers step 01 created.
 
 ## Example of my results
@@ -70,3 +73,24 @@ real    0m 51.16s
 user    1m 5.29s
 sys     0m 7.39s
 ```
+
+## Building and testing Terragrunt
+
+I'm new to Go. I have Go 1.21.8 installed. Here is how I compile Terragrunt:
+
+    $ go version
+    go version go1.21.8 linux/amd64
+    $ git log --pretty=format:'%h' -n 1
+    e54d4c89
+    $ export CGO_ENABLED=0
+    $ make build
+    set -xe ;\
+    vtag_maybe_extra=$(git describe --tags --abbrev=12 --dirty --broken) ;\
+    go build -o terragrunt -ldflags "-X github.com/gruntwork-io/go-commons/version.Version=${vtag_maybe_extra} -extldflags '-static'" .
+    + git describe --tags --abbrev=12 --dirty --broken
+    + vtag_maybe_extra=v0.53.6-51-ge54d4c898f73
+    + go build -o terragrunt -ldflags -X github.com/gruntwork-io/go-commons/version.Version=v0.53.6-51-ge54d4c898f73 -extldflags '-static' .
+    $ ls -l terragrunt
+    -rwxr-xr-x 1 user user 75173491 Mar 14 21:09 terragrunt
+    $ ./terragrunt --version
+    terragrunt version v0.53.6-51-ge54d4c898f73

@@ -5,5 +5,5 @@ ARG TG_VER
 
 FROM tf:${TF_VER}
 ARG TG_VER
-RUN	wget https://github.com/gruntwork-io/terragrunt/releases/download/v${TG_VER}/terragrunt_linux_amd64 -O /bin/terragrunt && \
-	chmod +x /bin/terragrunt
+ADD	${TG_VER} /bin/terragrunt
+RUN	chmod +x /bin/terragrunt
