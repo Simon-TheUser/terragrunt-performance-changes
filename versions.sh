@@ -26,6 +26,7 @@ TG_VERS=(
 #    v0.53.6
     v0.55.2
     v0.55.15
+    v0.55.16
 )
 
 TG_VERS_TO_TEST=(terragrunt.v*)
